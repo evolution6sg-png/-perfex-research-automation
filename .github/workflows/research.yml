@@ -1,0 +1,35 @@
+name: Perfex Bi-Weekly Research Bot
+
+on:
+  schedule:
+    # Runs every 2 weeks on Monday
+    # at 00:00 UTC = 08:00 SGT
+    - cron: '0 0 1,15 * 1'
+
+  # Also allows manual trigger
+  workflow_dispatch:
+
+jobs:
+  research:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install openai
+
+      - name: Run Perfex Research Bot
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GMAIL_SENDER: ${{ secrets.GMAIL_SENDER }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+        run: |
+          python research_bot.py
